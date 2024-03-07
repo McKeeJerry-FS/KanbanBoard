@@ -1,0 +1,75 @@
+﻿@page "/"
+
+@using KanbanBoard.Models
+@using KanbanBoard.Models.Enums
+
+@* <PageTitle>Welcome to Blazor Kanban Board</PageTitle> *@
+
+<NewTask OnSubmit="AddTask"
+	@attributes="InputAttributes" />
+
+<div class="row">
+	<Dropzone Priority="TaskPriority.High"
+			  TaskItems="TaskItems"
+			  OnDrop="OnDrop"
+			  OnStartDrag="OnStartDrag" />
+
+	<Dropzone Priority="TaskPriority.Normal"
+			  TaskItems="TaskItems"
+			  OnDrop="OnDrop"
+			  OnStartDrag="OnStartDrag" />
+
+	<Dropzone Priority="TaskPriority.Low"
+			  TaskItems="TaskItems"
+			  OnDrop="OnDrop"
+			  OnStartDrag="OnStartDrag" />
+</div>
+
+@code{
+	public TaskItem? CurrentItem;
+	List<TaskItem> TaskItems = new List<TaskItem>();
+
+	protected override void OnInitialized(){
+		TaskItems.Add(new TaskItem
+		{
+			TaskName = "Call Mom",
+			Priority = TaskPriority.High
+		});
+		TaskItems.Add(new TaskItem
+			{
+				TaskName = "Buy Milk",
+				Priority = TaskPriority.Normal
+			});
+		TaskItems.Add(new TaskItem
+			{
+				TaskName = "Exercise",
+				Priority = TaskPriority.Low
+			});
+	}
+
+	private void OnStartDrag(TaskItem item){
+		CurrentItem = item;
+	}
+
+	private void OnDrop(TaskPriority priority){
+		CurrentItem!.Priority = priority;
+	}
+
+	public Dictionary<string, object> InputAttributes = new Dictionary<string, object>
+	{
+		//{"maxlength", "25"},
+		//{"placeholder", "Enter New task"},
+		//{"title", "This textbox is used to enter your tasks."}
+	};
+
+	private void AddTask(string taskName)
+	{
+		var taskItem = new TaskItem()
+		{
+			TaskName = taskName,
+			Priority = TaskPriority.High
+		};
+		TaskItems.Add(taskItem);
+	}
+
+}
